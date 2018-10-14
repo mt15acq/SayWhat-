@@ -4,12 +4,13 @@ import { TouchableOpacity,
     StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
+/* White button component */
 export default class WhiteButton extends Component {
     render()
     {
         const {
             text,
-            onPress
+            onPress,
         } = this.props;
 
         return(
@@ -25,21 +26,27 @@ export default class WhiteButton extends Component {
     }
 }
 
+/* Component properties types */
 WhiteButton.propTypes = {
     text : PropTypes.string.isRequired,
     onPress : PropTypes.func.isRequired
 };
 
+/* Styles of components */
 const styles = StyleSheet.create ({
+    
+    /* Button style */
     buttonStyle: {
         padding : 10,
         backgroundColor : '#ffffff',
         borderRadius : 5,
-        elevation : 20,
-        width : 130,
-        height : 40
+        shadowRadius: 5,
+        elevation : 6,
+        width : 172,
+        height : 44
     },
 
+    /* Button's text style */
     textStyle : {
         fontSize : 16,
         fontWeight : 'bold',

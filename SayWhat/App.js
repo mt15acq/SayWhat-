@@ -6,13 +6,15 @@ import {
   View,
   Dimensions
 } from 'react-native';
-import Welcome from './src/screens/welcome';
-import Login from './src/screens/login';
-import { RootStack } from './config/route';
+
+import RootStack from './config/route';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import homeReducer from './src/helper/homeReducer';
 
 // Dimensions of the screen
-const { width, heigth } = Dimensions.get( 'window' );
-
+const { width, height } = Dimensions.get( 'window' );
+const store = createStore(homeReducer);
 
 export default class App extends React.Component {
   constructor(props) {
@@ -21,25 +23,18 @@ export default class App extends React.Component {
   }
   render() {
     return (
-       <RootStack />
+      <Provider store = { store }>
+         <RootStack />
+      </Provider>
     );
   }
 }
    
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  backgroundImg : {
+    flex : 1,
+    flexDirection : 'column',
+    width,
+    height,
+ },
 });
