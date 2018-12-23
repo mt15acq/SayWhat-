@@ -3,57 +3,42 @@ import {
     Dimensions,
     KeyboardAvoidingView,
     Image,
+    ImageBackground,
     Text,
     TextInput, 
     ScrollView,
     StyleSheet,
     View,  
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { enterUsername, recoverPassword, getInitalState } from './../helper/homeAction';
+import { enterPassword } from './../helper/homeAction';
 
-import ForgetPassword from './ForgotPassword';
 import WhiteButton from '../components/WhiteButton';
+import { findUser } from '../../api/user/findUser';
 
 
 /* Get dimensions of the current mobile device screen */
 const { width, height } = Dimensions.get( 'window' );
 
-/* Screen to enter login credentials { username, password } */
+/* 
+ * Screen to enter login credentials { username, password } 
+ */
 class Login extends React.Component{
     constructor(props) { 
         super(props) 
-        this.state = { 
-            username : '',
-            password : '',
-            forgotPassword : false,
-        };
     }
 
-    /* Method to set username */
-    handleUsername = (text) => { 
-        this.setState( { username: text })
-    }
-
-    /* Method to set password */
-    handlePassword = (text) => {
-        this.setState( { password: text })
-    }
-    
     render(){
+        return (
+            <ImageBackground source = { require ('../../assets/img/background/imgBackground.png') }
+                style = { styles.backgroundImg }>
 
-        if (this.state.forgotPassword){
-            return (
-                <ForgetPassword style = { styles.backgroundContainer }/>
-            )
-        }
-
-        if (this.props.show ){            
-            return (
                 <ScrollView>
                     <KeyboardAvoidingView
-                        style = { styles.backgroundContainer }
+                        style = { styles.backgroundImg }
                         behavior = 'position'
                         keyboardVerticalOffset = { 0 }>
 
@@ -67,8 +52,7 @@ class Login extends React.Component{
                             <TextInput style =  { styles.textInput }
                                 placeholder = 'Username'
                                 placeholderTextColor = '#e0e0e0'
-                                underlineColorAndroid = '#ffffff'
-                                onChangeText = { this.handleUsername }                   
+                                underlineColorAndroid = '#ffffff'               
                             />                
                         </View>
 
@@ -79,7 +63,6 @@ class Login extends React.Component{
                                 placeholderTextColor = '#e0e0e0'
                                 underlineColorAndroid = '#ffffff' 
                                 secureTextEntry = { true }
-                                onChangeText = { this.handlePassword }
                             />
                         </View>
 
@@ -87,39 +70,51 @@ class Login extends React.Component{
                         <View style = { styles.loginView }>
                             <WhiteButton 
                                 text = 'LOG IN'
-                                onPress = {() => { 
-                                    alert('Go to main');                        
-                            }} /> 
+                                onPress = { () => { 
+                                    const user = {
+                                        userName : "",
+                                        password: ""
+                                    }
+                                    findUser(PARAMETROS).then(result =>{
+
+                                        if(result){
+                                            const navigateAction = NavigationActions.navigate({
+                                                routeName : 'MainScreen'                      
+                                             });
+                                             this.props.navigation.dispatch(navigateAction); 
+                                        }
+                                             else{
+                                                 return alert('mensaje ')
+                                             }              
+                                
+                                    })
+                                     }} /> 
                         </View>
 
                         {/* Forgot password link */}
                         <View style = { styles.forgotLinkView }>
                             <Text style = { styles.forgotlinkText }
                                 onPress = { () => {
-                                    alert("Go To Forget")
-                                    this.setState({ forgotPassword : true })                                    
+                                    const navigateAction = NavigationActions.navigate({
+                                        routeName : 'ForgotScreen'                      
+                                     });
+                                     this.props.navigation.dispatch(navigateAction);                          
                                 }}>
                                 Forgot password?
                             </Text>
                         </View>
-
                     </KeyboardAvoidingView>
-               </ScrollView>                
-            )
-        }
-
-        /* When show = false, do not render the Login componenent */
-        return null;
+               </ScrollView>   
+            </ImageBackground>             
+        )
     }
 }
 
-/* Component properties types */
-Login.propTypes = {
-    show : PropTypes.bool.isRequired,
-}
-
+/* 
+ * Style components 
+ */
 const styles = StyleSheet.create ({
-    backgroundContainer : {
+    backgroundImg : {
         flex : 1,
         flexDirection : 'column',
         width,
@@ -127,7 +122,6 @@ const styles = StyleSheet.create ({
         alignItems : 'center',
         justifyContent : 'center',
         //backgroundColor : 'purple'
-        //padding = 20,
     },
 
     contentStyle : {
@@ -157,7 +151,7 @@ const styles = StyleSheet.create ({
 
     loginView : {
         flex : 0.1,
-        backgroundColor : 'pink',
+        //backgroundColor : 'pink',
         width : width,    
         flexDirection : 'row',
         alignItems : 'center',
@@ -193,9 +187,21 @@ const styles = StyleSheet.create ({
    },
  });
 
- const mapStateToProps = (state) => {
-     const { home } = state
-     return { home }
- }
+/*
+ * Mapping To Props.
+ */ 
+const mapStateToProps = (state) => {
+    const { home } = state
+    return { home }
+}
 
- export default connect(mapStateToProps)(Login);
+const mapDispatchToProps = (dispatch) => (
+{
+    onChangeUsername : (text) => dispatch(enterUsername(text)),
+    onChangePassword : (text) => dispatch(enterPassword(text)),
+    onClickForgotLiknk : (show) => dispatch(recoverPassword(show)),
+    onPressBack : () => dispacth(getInitalState()),
+    onLogIn : (user) => dispatch(getUser(user))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

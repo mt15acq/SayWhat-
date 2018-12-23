@@ -8,49 +8,52 @@ import {
     View
 } from 'react-native';
 
+import { connect } from 'react-redux';
 import WhiteButton from './../components/WhiteButton';
+import { showLogInScreen, enterEmail } from './../helper/homeAction';
+import { NavigationActions } from 'react-navigation';
 
 /* Get dimensions of the current mobile device screen */
 const { width, height } = Dimensions.get( 'window' );
 
-export default class ForgotPassword extends React.Component {
+class ForgotPassword extends React.Component {
     constructor(props) { 
         super(props) 
         this.state = { 
-            sendPassword : false,
         };
     }
     render (){
+        if(this.props.home.forgotPasswordState){
             return (
             <View style = { styles.mainView }>
 
-                 <View style = { this.state.sendPassword ? nul : styles.logoView }>
+                 <View style = { styles.logoView }>
                     {/* SW Logo */}
                     <Image source = { require ('../../assets/img/logo/SayWhatLogo.png')} />
                 </View>
 
                 {/* Username text input */}
-                <View style = { this.state.sendPassword ? null : styles.textView }>
-                    <TextInput style =  { this.state.sendPassword ? null : styles.textInputStyle }
+                <View style = {  styles.textView }>
+                    <TextInput style =  { styles.textInputStyle }
                         placeholder = 'Username'
                         placeholderTextColor = '#e0e0e0'
                         underlineColorAndroid = '#ffffff'
-                        onChangeText = { this.handleUsername }                   
+                        onChangeText = { onChangeUsername }                   
                     />                
                 </View>
 
                 {/* Security code text input */}
-                <View style = { this.state.sendPassword ? null : styles.textView }>
-                    <TextInput style =  { this.state.sendPassword ? null : styles.textInputStyle }
-                        placeholder = 'Security code'
+                <View style = { styles.textView }>
+                    <TextInput style =  { styles.textInputStyle }
+                        placeholder = 'Email'
                         placeholderTextColor = '#e0e0e0'
                         underlineColorAndroid = '#ffffff'
-                        onChangeText = { this.handleUsername }                   
+                        onChangeText = { onChangeEmail }                   
                     />                
                 </View>
 
                 {/* Send button */}
-                <View style = { this.state.sendPassword ? null : styles.buttonView }>
+                <View style = { styles.buttonView }>
                     <WhiteButton 
                         text = 'SEND'
                         onPress = {() => { 
@@ -60,19 +63,19 @@ export default class ForgotPassword extends React.Component {
                 </View>
               
                 {/* Forgot security code text */}
-                <View style = { this.state.sendPassword ? null : styles.forgotView }>
-                    <Text style = { this.state.sendPassword ? null : styles.forgotText }>
+                <View style = { styles.forgotView }>
+                    <Text style = { styles.forgotText }>
                             Forgot password?
                     </Text>
-                    <Text style = { this.state.sendPassword ? null : styles.forgotText } 
+                    <Text style = {styles.forgotText } 
                         textDecorationLine = 'underline' >
                             CONTACT US:
                     </Text>                    
                 </View>
 
                 {/* Email link */}
-                <View style = { this.state.sendPassword ? null : styles.forgotView }>
-                    <Text style = { this.state.sendPassword ? null : styles.forgotText }
+                <View style = { styles.forgotView }>
+                    <Text style = { styles.forgotText }
                         textDecorationLine = 'underline'
                         onPress = {() => { Linking.openURL('mailto:mariagtome@gmail.com?subject=Request Security Code & body=body')
                         }} >
@@ -80,15 +83,11 @@ export default class ForgotPassword extends React.Component {
                     </Text>              
                 </View>
 
-                {/**/}
-                <View style = { this.state.sendPassword ? styles.overlayingView : null}>
-                    <Text>
-                        This is your password
-                    </Text>
-                </View>
-
             </View>
-    )}
+        )}
+
+        return null;
+    }
 }
 
 /* Components styles */
@@ -100,7 +99,7 @@ const styles = StyleSheet.create ({
         height,
         alignItems : 'center',
         justifyContent : 'center',
-        backgroundColor : 'green'
+        //backgroundColor : 'green'
     },
 
     logoView : {
@@ -109,23 +108,23 @@ const styles = StyleSheet.create ({
         flexDirection : "row",
         alignItems : 'center',
         justifyContent : 'center',
-        backgroundColor : 'pink'
+        //backgroundColor : 'pink'
     },
 
     textView : {
         flex : 0.13,
-        backgroundColor : 'red',  
         alignItems : 'center',
         justifyContent : 'flex-start',
-        width : width
+        width : width,
+        //backgroundColor : 'red',  
     },
 
     buttonView : {
         flex : 0.1,
-        backgroundColor : 'grey',
         alignItems : 'center',
         justifyContent : 'center',
-        width
+        width,
+        //backgroundColor : 'grey',
     },
 
     textInputStyle : {
@@ -134,7 +133,7 @@ const styles = StyleSheet.create ({
         height : height * 0.3,
         width : width * 0.7,
         color : '#ffffff',
-        backgroundColor : 'blue',   
+        //backgroundColor : 'blue',   
     },
 
     forgotView : {
@@ -142,7 +141,7 @@ const styles = StyleSheet.create ({
         flexDirection : 'column',
         alignItems : 'center',
         justifyContent : 'flex-start',
-        backgroundColor : 'yellow',  
+        //backgroundColor : 'yellow',  
     },
 
     forgotText : {
@@ -150,8 +149,8 @@ const styles = StyleSheet.create ({
         flexDirection : 'row',
         alignItems : 'flex-start',
         justifyContent :'center',
-        backgroundColor : 'blue',  
         textAlign : 'center',
+        //backgroundColor : 'blue',  
     },
 
     overlayingView : {
@@ -161,6 +160,21 @@ const styles = StyleSheet.create ({
         flexDirection : 'row',
         alignItems : 'center',
         justifyContent :'center',
-        backgroundColor : 'blue',  
+        //backgroundColor : 'blue',  
     }
 })
+
+const mapStateToProps = (state) => {
+    const { home } = state
+    return { home }
+}
+
+const mapDispatchToProps = (dispatch) => (
+{
+    onChangeUsername : (text) => dispatch(enterUsername(text)),
+    onChangeEmail : (text) => dispatch(enterEmail(text)),
+    onClickForgotLiknk : (show) => dispatch(recoverPassword(show)),
+    onPressBack : () => dispacth(showLogInScreen(true)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword);

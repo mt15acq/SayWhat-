@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Dimensions,
+import { 
+    BackHandler,
+    Dimensions,
     Image,
     ImageBackground,
     StyleSheet,
     View } from 'react-native';
 
 import { connect } from 'react-redux';
-import { changeLoginState } from '../helper/homeAction';
-import { NavigationActions } from 'react-navigation';
 
-import ForgotPassword from './ForgotPassword';
+import { showLogInScreen } from './../helper/homeAction';
+import { getInitalState } from './../helper/homeAction';
+import { showSignUpScreen } from './../helper/homeAction';
 import Login from './Login';
 import Signup from './Signup';
 import TrasparentButton from '../components/TransparentButton';
@@ -22,35 +24,39 @@ const { width, height } = Dimensions.get( 'window' );
 class Home extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            initialState : true,
-            loginState : false,
-            sigunpState : false,  
-            forgotPassword : false,          
-        };
+    }
+
+    /* Handle to configure the back button */
+    handleBackPress = () => {
+        this.props.onPressBack();
+        return true;
+    }
+    
+    /* */
+    componentDidMount(){
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
     render() {
 
         return (          
-            <ImageBackground source = { require ('../../assets/img/background/imgBackground.png') }
-                style = { defaultStyle.backgroundImg }>
+            <View style = { defaultStyle.backgroundImg }>
 
                 {/* Log  in component to render the fields for user to enter the app */}
-                <Login show = { this.state.loginState }/>
+                <Login show = { this.props.home.loginState }/>
                 
                 {/* Sign up component to render the fields for user to register and enter the app */}
-                <Signup show = { this.state.sigunpState }/>
+                <Signup show = { this.props.home.sigunpState }/>
              
                 {/* SW Logo */}
-                <View style = { this.state.initialState ? defaultStyle.logoView : null }>
-                    <Image source = { this.state.initialState ? require ('../../assets/img/logo/SayWhatLogo.png'): null } />   
+                <View style = { !this.props.home.loginState && !this.props.home.sigunpState ? defaultStyle.logoView : null }>
+                    <Image source = { !this.props.home.loginState && !this.props.home.sigunpState ? require ('../../assets/img/logo/SayWhatLogo.png'): null } />   
                 </View>
 
                 {/* Sign up button that renders the sign up component */}
-                <View style = { this.state.initialState ? defaultStyle.signUpView : null }>
+                <View style = { !this.props.home.loginState && !this.props.home.sigunpState ? defaultStyle.signUpView : null }>
                     
-                    { this.state.initialState ? 
+                    { !this.props.home.loginState && !this.props.home.sigunpState ? 
                         <WhiteButton 
                             text = "SIGN UP"
                             onPress = { () => {
@@ -59,29 +65,30 @@ class Home extends React.Component {
                                 //    routeName : 'SignupScreen'                      
                                 //});
                                 //this.props.navigation.dispatch(navigateAction);
-                                this.setState({ initialState : false , loginState : false, sigunpState : true });
+                                //this.setState({ initialState : false , loginState : false, sigunpState : true });
+                                this.props.onPressSignUp(true);
                             }} 
                         /> 
                     : null }
                 </View>
 
                 {/* Log in button that renders the log in component */}
-                <View style = { this.state.initialState ? defaultStyle.signUpView : null }>
+                <View style = { !this.props.home.loginState && !this.props.home.sigunpState ? defaultStyle.signUpView : null }>
                     
-                    {this.state.initialState ? 
+                    { !this.props.home.loginState && !this.props.home.sigunpState ? 
                         <TrasparentButton 
                             text = "LOG IN"
                             onPress = { () => { 
-                                const navigateAction = NavigationActions.navigate({
-                                    routeName : 'LoginScreen'                      
-                                });
-                                this.setState({ initialState : false , loginState : true, sigunpState : false });
-                                //this.props.onPressLogIn(true);
+                                //const navigateAction = NavigationActions.navigate({
+                                 //   routeName : 'LoginScreen'                      
+                                //});
+                                //this.setState({ initialState : false , loginState : true, sigunpState : false });
+                                this.props.onPressLogIn(true);
                                 //this.props.navigation.dispatch(navigateAction);
                         }} />
                     : null }    
                 </View>
-            </ImageBackground>
+            </View>
         );
     }
 }
@@ -121,15 +128,16 @@ const defaultStyle = StyleSheet.create ({
     },
 })
 
-
 const mapStateToProps = (state) => {
     const { home } = state
     return { home }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-
-    onPressLogIn: (store) => dispatch(changeLoginState(store))
+const mapDispatchToProps = (dispatch) => 
+({
+    onPressBack : () => dispatch(getInitalState()),
+    onPressLogIn : (show) => dispatch(showLogInScreen(show)),
+    onPressSignUp : (show) => dispatch(showSignUpScreen(show))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

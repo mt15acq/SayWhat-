@@ -4,18 +4,22 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions
+  Dimensions,
+  ImageBackground
 } from 'react-native';
 
-import RootStack from './config/route';
+import RootStack from './app/config/route.js';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import homeReducer from './src/helper/homeReducer';
+import allReducers from './app/src/helper/homeReducer.js';
 
 // Dimensions of the screen
 const { width, height } = Dimensions.get( 'window' );
-const store = createStore(homeReducer);
+const store = createStore(allReducers);
 
+/*
+ * Start point of the application 
+ */
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -23,15 +27,19 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <Provider store = { store }>
+      
+      <Provider store = { store } >
          <RootStack />
       </Provider>
-    );
-  }
+      
+  )}
 }
    
+/* 
+ * Style components 
+ */
 const styles = StyleSheet.create({
-  backgroundImg : {
+   backgroundImg : {
     flex : 1,
     flexDirection : 'column',
     width,
