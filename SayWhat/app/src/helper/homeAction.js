@@ -4,6 +4,7 @@ import { findUser } from '../../api/user/findUser';
 /*
  * Action creators.
  */
+    
     export function enterUsername (detail) {
         return {
             type : actions.ENTER_USERNAME,
@@ -62,20 +63,40 @@ import { findUser } from '../../api/user/findUser';
         }
     }
 
-    export function getUser (attemptingUser)
-    {
-        findUser(attemptingUser).then(result => {
-            if (result) {
-                const navigateAction = NavigationActions.navigate({
-                    routeName : 'MainScreen'                      
-                });
-                this.props.navigation.dispatch(navigateAction); 
-            } else {
-                return alert('mensaje ')
-            }})
+    export function fetchLogging () {
         return {
-            type: actions.LOG_IN,
-            userName: "",
-            changeState : "logged_in"
+            type: actions.FETCHING_LOGIN
+        } 
+    }
+
+    export function fetchLoggingSuccess(result){
+        return {
+            type: actions.FETCHING_LOGIN_SUCCESS,
+            username: result.userName
+        }
+    }
+
+    export function fetchLoggingFailure(err){
+        return {
+            type: actions.FETCHING_LOGIN_FAILURE,
+            errorCode: err.errorCode,
+            errorMessage: err.errorMessage
+        }
+    }
+    
+    export const getUser = (attemptingUser) =>
+    { 
+       return  async dispatch => {
+
+            dispatch(fetchLogging());
+
+            const a = await findUser(attemptingUser)
+            //.then(result => {
+                if (a) {
+                    return dispatch(fetchLoggingSuccess(result))
+                } else {
+                    return dispatch(fetchLoggingFailure(err))
+                }
+           // })
         }
     }

@@ -22,6 +22,20 @@
     // Action to display the forgot password screen (name, email, username & password)
     export const RECOVER_FORGOT_PASSWORD = "RECOVER_FORGOT_PASSWORD"
 
+    // Action on connection to the API for logging
+    export const FETCHING_LOGIN = "FETCHING_LOGIN"
+    
+    // On successful response from the API when logging
+    export const FETCHING_LOGIN_SUCCESS = "FETCHING_LOGIN_SUCCESS"
+
+    // On unsuccessful response from the API when logging
+    export const FETCHING_LOGIN_FAILURE = "FETCHING_LOGIN_FAILURE"
+
+
+
+
+    
+
 
 
     

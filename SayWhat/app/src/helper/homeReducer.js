@@ -11,7 +11,10 @@ const initialState = {
         username : "",
         password : "",
         email : "",
-        state: "initial"
+        state: "initial",
+        fetching : false,
+        errorCode : "",
+        errorMessage : ""
 };
 
 /**
@@ -22,6 +25,29 @@ const initialState = {
 const homeReducer = (state = initialState, action) => {
     debugger 
     switch (action.type){
+        case actions.FETCHING_LOGIN:{
+            return Object.assign({}, state, {
+                fetching: true,
+                errorCode : "",
+                errorMessage : ""
+            })
+        }
+        case actions.FETCHING_LOGIN_SUCCESS: {
+            return Object.assign({}, state, {
+                fetching: false,
+                username: action.username,
+                errorCode : "",
+                errorMessage : ""
+            }) 
+        }
+        case actions.FETCHING_LOGIN_FAILURE:{
+            return Object.assign({}, state, {
+                fetching: false,
+                errorCode : action.errorCode,
+                errorMessage : action.Message
+            })
+        }
+        
         case actions.GET_INITIAL_STATE:
             return Object.assign({}, state, {
                 loginState : false,

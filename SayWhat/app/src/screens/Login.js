@@ -13,12 +13,10 @@ import {
 import { NavigationActions } from 'react-navigation';
 
 import { connect } from 'react-redux';
-import { enterUsername, recoverPassword, getInitalState } from './../helper/homeAction';
+import { enterUsername, recoverPassword, getInitalState, getUser } from './../helper/homeAction';
 import { enterPassword } from './../helper/homeAction';
 
 import WhiteButton from '../components/WhiteButton';
-import { findUser } from '../../api/user/findUser';
-
 
 /* Get dimensions of the current mobile device screen */
 const { width, height } = Dimensions.get( 'window' );
@@ -52,7 +50,8 @@ class Login extends React.Component{
                             <TextInput style =  { styles.textInput }
                                 placeholder = 'Username'
                                 placeholderTextColor = '#e0e0e0'
-                                underlineColorAndroid = '#ffffff'               
+                                underlineColorAndroid = '#ffffff' 
+                                onChangeText = { text => { this.setState({ userName : text })} }              
                             />                
                         </View>
 
@@ -63,6 +62,7 @@ class Login extends React.Component{
                                 placeholderTextColor = '#e0e0e0'
                                 underlineColorAndroid = '#ffffff' 
                                 secureTextEntry = { true }
+                                onChangeText = { text => { this.setState({ password : text })}}
                             />
                         </View>
 
@@ -72,23 +72,24 @@ class Login extends React.Component{
                                 text = 'LOG IN'
                                 onPress = { () => { 
                                     const user = {
-                                        userName : "",
-                                        password: ""
+                                        userName : this.state.userName,
+                                        password: this.state.password
                                     }
-                                    findUser(PARAMETROS).then(result =>{
+                                    this.props.onLogin(user)
+                                    // .then(result =>{
 
-                                        if(result){
-                                            const navigateAction = NavigationActions.navigate({
-                                                routeName : 'MainScreen'                      
-                                             });
-                                             this.props.navigation.dispatch(navigateAction); 
-                                        }
-                                             else{
-                                                 return alert('mensaje ')
-                                             }              
+                                    //     if(result){
+                                    //         const navigateAction = NavigationActions.navigate({
+                                    //             routeName : 'MainScreen'                      
+                                    //          });
+                                    //          this.props.navigation.dispatch(navigateAction); 
+                                    //     }
+                                    //          else{
+                                    //              return alert('mensaje ')
+                                    //          }              
                                 
-                                    })
-                                     }} /> 
+                                    // })
+                                }} /> 
                         </View>
 
                         {/* Forgot password link */}
@@ -200,8 +201,8 @@ const mapDispatchToProps = (dispatch) => (
     onChangeUsername : (text) => dispatch(enterUsername(text)),
     onChangePassword : (text) => dispatch(enterPassword(text)),
     onClickForgotLiknk : (show) => dispatch(recoverPassword(show)),
-    onPressBack : () => dispacth(getInitalState()),
-    onLogIn : (user) => dispatch(getUser(user))
+    onPressBack : () => dispatch(getInitalState()),
+    onLogin : (user) => dispatch(getUser(user))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
