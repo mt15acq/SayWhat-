@@ -29,6 +29,21 @@ class Login extends React.Component{
         super(props) 
     }
 
+    /* Component that will check the last state of Redux props and will compare it with the previous state and will take the proper action*/
+    componentWillReceiveProps(nextProps){
+        if(nextProps.homeReducer.loginState !== this.props.homeReducer.loginState){
+            nextProps.homeReducer.loginState ? this._navigateTo('Main') : null;
+        }
+    }
+
+    /* Component to navigate to other screens using react-navigation */
+    _navigateTo = (routeScreen) =>{
+        const navigateAction = NavigationActions.navigate({
+            routeName : routeScreen                
+        });
+        return this.props.navigation.dispatch(navigateAction);  
+    }
+    
     render(){
         return (
             <ImageBackground source = { require ('../../assets/img/background/imgBackground.png') }
@@ -76,19 +91,6 @@ class Login extends React.Component{
                                         password: this.state.password
                                     }
                                     this.props.onLogin(user)
-                                    // .then(result =>{
-
-                                    //     if(result){
-                                    //         const navigateAction = NavigationActions.navigate({
-                                    //             routeName : 'MainScreen'                      
-                                    //          });
-                                    //          this.props.navigation.dispatch(navigateAction); 
-                                    //     }
-                                    //          else{
-                                    //              return alert('mensaje ')
-                                    //          }              
-                                
-                                    // })
                                 }} /> 
                         </View>
 
@@ -96,10 +98,7 @@ class Login extends React.Component{
                         <View style = { styles.forgotLinkView }>
                             <Text style = { styles.forgotlinkText }
                                 onPress = { () => {
-                                    const navigateAction = NavigationActions.navigate({
-                                        routeName : 'ForgotScreen'                      
-                                     });
-                                     this.props.navigation.dispatch(navigateAction);                          
+                                    this._navigateTo('ForgotScreen');                        
                                 }}>
                                 Forgot password?
                             </Text>
@@ -110,6 +109,29 @@ class Login extends React.Component{
         )
     }
 }
+
+
+/*
+ * Mapping To Props.
+ */ 
+const mapStateToProps = (state) => {
+    const { homeReducer } = state
+    return { homeReducer }
+}
+
+const mapDispatchToProps = (dispatch) => 
+{
+    debugger
+    return{
+        onChangeUsername : (text) => dispatch(enterUsername(text)),
+        onChangePassword : (text) => dispatch(enterPassword(text)),
+        onClickForgotLiknk : (show) => dispatch(recoverPassword(show)),
+        onPressBack : () => dispatch(getInitalState()),
+        onLogin : (user) => dispatch(getUser(user))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 /* 
  * Style components 
@@ -187,22 +209,3 @@ const styles = StyleSheet.create ({
         color : '#ffffff'
    },
  });
-
-/*
- * Mapping To Props.
- */ 
-const mapStateToProps = (state) => {
-    const { home } = state
-    return { home }
-}
-
-const mapDispatchToProps = (dispatch) => (
-{
-    onChangeUsername : (text) => dispatch(enterUsername(text)),
-    onChangePassword : (text) => dispatch(enterPassword(text)),
-    onClickForgotLiknk : (show) => dispatch(recoverPassword(show)),
-    onPressBack : () => dispatch(getInitalState()),
-    onLogin : (user) => dispatch(getUser(user))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);

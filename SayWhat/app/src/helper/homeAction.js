@@ -1,5 +1,5 @@
 import * as actions from './actionTypes.js';
-import { findUser } from '../../api/user/findUser';
+import findUser  from '../../api/user/findUser';
 
 /*
  * Action creators.
@@ -84,19 +84,14 @@ import { findUser } from '../../api/user/findUser';
         }
     }
     
-    export const getUser = (attemptingUser) =>
-    { 
-       return  async dispatch => {
-
-            dispatch(fetchLogging());
-
-            const a = await findUser(attemptingUser)
-            //.then(result => {
-                if (a) {
+    export const getUser = attemptingUser => dispatch => {
+        dispatch(fetchLogging());
+        findUser(attemptingUser)
+            .then(result => {
+                if (result) {
                     return dispatch(fetchLoggingSuccess(result))
                 } else {
-                    return dispatch(fetchLoggingFailure(err))
+                    return dispatch(fetchLoggingFailure('bhjbbjb'))
                 }
-           // })
-        }
-    }
+           })
+      }
