@@ -12,10 +12,11 @@ import RootStack from './app/config/route.js';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import allReducers from './app/src/helper/homeReducer.js';
+import getStore from './app/config/store';
 
 // Dimensions of the screen
 const { width, height } = Dimensions.get( 'window' );
-const store = createStore(allReducers);
+const store = getStore();
 
 /*
  * Start point of the application 

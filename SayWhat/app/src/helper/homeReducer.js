@@ -23,7 +23,6 @@ const initialState = {
  * @param {Action to be executed in the Home screen (e.g. LogIn, SignUp)} action 
  */
 const homeReducer = (state = initialState, action) => {
-    debugger 
     switch (action.type){
         case actions.FETCHING_LOGIN:{
             return Object.assign({}, state, {
@@ -35,6 +34,7 @@ const homeReducer = (state = initialState, action) => {
         case actions.FETCHING_LOGIN_SUCCESS: {
             return Object.assign({}, state, {
                 fetching: false,
+                loginState: true,
                 username: action.username,
                 errorCode : "",
                 errorMessage : ""
@@ -87,9 +87,5 @@ const homeReducer = (state = initialState, action) => {
     }
 };
 
-const allReducers = combineReducers ({
-    home : homeReducer
-}); 
-
-export default allReducers 
+export default homeReducer 
     
