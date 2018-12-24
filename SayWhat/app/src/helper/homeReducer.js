@@ -10,11 +10,15 @@ const initialState = {
         forgotPasswordState : false,
         username : "",
         password : "",
-        email : "",
-        state: "initial",
         fetching : false,
         errorCode : "",
-        errorMessage : ""
+        errorMessage : "",
+        error : false,
+
+
+        email : "",
+        state: "initial",
+
 };
 
 /**
@@ -24,64 +28,66 @@ const initialState = {
  */
 const homeReducer = (state = initialState, action) => {
     switch (action.type){
+
+        /* Log in states */
         case actions.FETCHING_LOGIN:{
             return Object.assign({}, state, {
-                fetching: true,
+                error: true,
                 errorCode : "",
-                errorMessage : ""
+                errorMessage : "",
+                fetching: true,
+                loginState : false,
             })
         }
         case actions.FETCHING_LOGIN_SUCCESS: {
             return Object.assign({}, state, {
+                error: true,
+                errorCode : "",
+                errorMessage : "",
                 fetching: false,
                 loginState: true,
                 username: action.username,
-                errorCode : "",
-                errorMessage : ""
             }) 
         }
         case actions.FETCHING_LOGIN_FAILURE:{
             return Object.assign({}, state, {
-                fetching: false,
+                error: true,
                 errorCode : action.errorCode,
-                errorMessage : action.Message
+                errorMessage : action.errorMessage,          
+                fetching: false,
+                loginState : false,
             })
         }
-        
-        case actions.GET_INITIAL_STATE:
+
+        /* Sign up states */
+        case actions.FETCHING_SIGNUP: {
             return Object.assign({}, state, {
-                loginState : false,
-                signupState : false,
-                forgotPasswordState : false
+                error: false,
+                errorCode: "" ,
+                errorMessage: "",
+                fetching: true,
+                loginState: false
             })
-        case actions.LOG_IN:
+        }
+        case actions.FETCHING_SIGNUP_FAILURE: {
             return Object.assign({}, state, {
-                loginState : action.changeState,
-                username: action.username
-            })    
-        case actions.ENTER_USERNAME:
-            return Object.assign({}, state, {
-                username : actions.username
-            })        
-        case actions.ENTER_PASSWORD:
-            return Object.assign({}, state, {
-             password: action.password
-            })      
-        case actions.ENTER_EMAIL :
-            return Object.assign({}, state, {
-                email : actions.email
+                error: true,
+                errorCode: action.errorCode,
+                errorMessage: action.errorMessage,
+                fetching: false,
+                loginState: false
             })
-        case actions.SIGN_UP:
+        }
+        case actions.FETCHING_SIGNUP_SUCCESS: {
             return Object.assign({}, state, {
-                loginState : false,
-                signupState : action.changeState
-            })   
-        case actions.RECOVER_FORGOT_PASSWORD:
-            return Object.assign({}, state, {
-                loginState : false,
-                signupState : false,
-                forgotPasswordState : action.changeState,
-            })  
+                error: false,
+                errorCode: "",
+                errorMessage: "",
+                fetching: false,
+                loginState: true
+            })
+        }
+
         default:
             return state;    
     }

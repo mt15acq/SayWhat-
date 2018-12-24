@@ -1,4 +1,4 @@
-import { getResponseBackend } from '../api';
+import  {getResponseBackend}  from '../api';
 import {resolveUrl} from '../config';
 
 
@@ -10,5 +10,5 @@ export default findUser = function(user) {
     }   
     return getResponseBackend(data).then(result =>{
         return result
-    })
+    }).catch(err=>{ throw error})
 }

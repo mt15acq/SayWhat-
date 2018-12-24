@@ -1,8 +1,6 @@
-import { fetch } from 'react-native';
 
 
-export default getResponseBackend = (data) =>{
-
+export const getResponseBackend = (data) =>{
  const configForRequest = data.body === null ? {    
     method: data.method,
     headers: {
@@ -24,8 +22,12 @@ export default getResponseBackend = (data) =>{
       //}),
   };
 
-  fetch(data.url, configForRequest).then(result =>{
-        return result
-        
-      }).catch(err =>{throw err});
+  return fetch(data.url, configForRequest)
+    .then(response =>{
+      if (response.status >= 400) {
+        return false;
+      } else if (response.status == 200) {
+        return response.json();
+      }
+    }).catch(err =>{  throw err});
 }

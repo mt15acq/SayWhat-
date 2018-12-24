@@ -1,66 +1,23 @@
 import * as actions from './actionTypes.js';
 import findUser  from '../../api/user/findUser';
+import postUser from '../../api/user/postUser';
+import * as errors from '../error/errorMessage';
 
 /*
  * Action creators.
  */
-    
-    export function enterUsername (detail) {
-        return {
-            type : actions.ENTER_USERNAME,
-            username : detail
-        }
-    }
 
-    export function enterPassword (detail) {
-        return {
-            type : actions.ENTER_PASSWORD,
-            password : detail
-        }
-    }
-
-    export function recoverPassword (show) {
-        return {
-            type : actions.RECOVER_FORGOT_PASSWORD,
-            changeState : show
-        }
-    }
-
-    export function getInitalState () {
-        debugger
-        return {
-            type : actions.GET_INITIAL_STATE,
-        }
-    }
-
-    /**
-     * LOG_IN action.
-     * @param {Whether or not the login screen should be displayed} showScreen 
-     */
-    export function showLogInScreen (showScreen) {
-        debugger
-        return {
-            type : actions.LOG_IN,
-            changeState : showScreen
-        }
-    }
-
-    /**
-     * SIGN_UP action.
-     * @param {Whether or not the signUp screen should be displayed} showSignUpScreen 
-     */
-    export function showSignUpScreen (showScreen) {
-        return {
-            type : actions.SIGN_UP,
-            changeState : showScreen
-        }
-    }
-
-    export function enterEmail (detail) {
-        return {
-            type: actions.ENTER_EMAIL,
-            email : detail
-        }
+    /* Log in actions */
+    export const getUser = attemptingUser => dispatch => {
+        dispatch(fetchLogging());
+        findUser(attemptingUser)
+            .then(result => {
+                if (result) {
+                    return dispatch(fetchLoggingSuccess(result))
+                } else {
+                    return dispatch(fetchLoggingFailure({err:{ errorCode : '404', errorMessage: errors.invalidUserNameOrPassword }})
+                )}
+            })
     }
 
     export function fetchLogging () {
@@ -77,21 +34,11 @@ import findUser  from '../../api/user/findUser';
     }
 
     export function fetchLoggingFailure(err){
+        debugger;
         return {
             type: actions.FETCHING_LOGIN_FAILURE,
-            errorCode: err.errorCode,
-            errorMessage: err.errorMessage
+            errorCode: err.err.errorCode,
+            errorMessage: err.err.errorMessage
         }
     }
     
-    export const getUser = attemptingUser => dispatch => {
-        dispatch(fetchLogging());
-        findUser(attemptingUser)
-            .then(result => {
-                if (result) {
-                    return dispatch(fetchLoggingSuccess(result))
-                } else {
-                    return dispatch(fetchLoggingFailure('bhjbbjb'))
-                }
-           })
-      }

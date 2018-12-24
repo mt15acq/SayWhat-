@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { 
+    Alert,
     Dimensions,
     KeyboardAvoidingView,
     Image,
@@ -31,8 +32,12 @@ class Login extends React.Component{
 
     /* Component that will check the last state of Redux props and will compare it with the previous state and will take the proper action*/
     componentWillReceiveProps(nextProps){
+        debugger;
         if(nextProps.homeReducer.loginState !== this.props.homeReducer.loginState){
-            nextProps.homeReducer.loginState ? this._navigateTo('Main') : null;
+            nextProps.homeReducer.loginState ? this._navigateTo('MainScreen') : null;
+        }
+        if(nextProps.homeReducer.errorCode !==  this.props.homeReducer.errorCode){
+            nextProps.homeReducer.error === true ? Alert.alert('Failed login attempt', nextProps.homeReducer.errorMessage, [{ text : 'Try agan'}], {cancelable : false }) : null;
         }
     }
 
@@ -121,7 +126,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => 
 {
-    debugger
     return{
         onChangeUsername : (text) => dispatch(enterUsername(text)),
         onChangePassword : (text) => dispatch(enterPassword(text)),
