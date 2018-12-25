@@ -42,3 +42,47 @@ import * as errors from '../error/errorMessage';
         }
     }
     
+
+    /* Sign up actions */
+    export const createUser = newUser => dispatch => {
+        debugger
+        dispatch(fetchSignup());
+
+        //if(validateUser(newUser)){
+            postUser(newUser)
+            .then(result => {
+                if(result){
+                    return dispatch(fetchSignupSuccess())
+                }
+                else {
+                    //return dispatch(fetchSignupFailure({err : { errorCode: '404' , errorMessage: "Sign up didnt work" }}))
+                    return dispatch(fetchSignupFailure({err : { errorCode: '404' , errorMessage: "Sign up didnt work" }}))
+
+                }
+            })
+        // } else {
+        //     return dispatch(fetchSignupFailure({err : { errorCode: '404' , errorMessage: "Sign up didnt work" }}))
+        // }  
+    }
+
+    export function fetchSignup (){
+        return {
+            type: actions.FETCHING_SIGNUP
+        }
+    }
+
+    export function fetchSignupSuccess(){
+        return {
+            type: actions.FETCHING_SIGNUP_SUCCESS
+        }
+    }
+
+    export function fetchSignupFailure(err){
+        return {
+            type: actions.FETCHING_SIGNUP_FAILURE,
+            errorCode: err.err.errorCode,
+            errorMessage: err.err.errorMessage
+        }
+    }
+
+    
